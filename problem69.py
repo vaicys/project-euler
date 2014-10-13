@@ -38,6 +38,10 @@ def gcd(n, m):
         (n, m) = (m, r)
 
 
+def phi_pk(p, k):
+    return int(p**k * (p - 1) / p)
+
+
 def totient_seq(limit):
     i = 2
     seq = dict()
@@ -47,15 +51,15 @@ def totient_seq(limit):
         else:
             fraqs = prime_fraqs(i)
             count = 1
-            if len(fraqs) == len(set(fraqs)):
-                for f in fraqs:
+            j = 0
+            while j < len(fraqs):
+                f = fraqs[j]
+                c = fraqs.count(f)
+                if c == 1:
                     count *= seq[f]
-            else:
-                count = 1
-                j = 2
-                while j < i:
-                    if gcd(i, j) == 1:
-                        count += 1
+                else:
+                    count *= phi_pk(f, c)
+                while j < len(fraqs) and fraqs[j] == f:
                     j += 1
         seq[i] = count
         i += 1
@@ -63,6 +67,5 @@ def totient_seq(limit):
 
 
 seq = totient_seq(1000000)
-print(len(seq))
-#maximum = max(seq, key=lambda x: x[0]/x[1])
-#print(maximum, maximum[0] / maximum[1])
+maximum = max(seq, key=lambda x: x/seq[x])
+print(maximum)
